@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Future-Dash Community</title>
+    <style>
+        body { background: #0a0a0a; color: white; font-family: 'Courier New', monospace; text-align: center; }
+        .level-card { 
+            border: 2px solid #00ffff; margin: 10px auto; padding: 15px; width: 60%;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(0, 255, 255, 0.05);
+        }
+        button { background: #00ffff; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #fff; }
+    </style>
+</head>
+<body>
+    <h1>COMMUNITY LEVELS</h1>
+    <div id="level-list">Loading world maps...</div>
+
+    <script type="module" src="firebase-init.js"></script>
+    <script type="module">
+        async function loadLevels() {
+            const list = document.getElementById("level-list");
+            
+            // Wait for Firebase to be ready
+            if (typeof window.getCommunityLevels !== 'function') {
+                list.innerHTML = "Connecting to Cloud...";
+                setTimeout(loadLevels, 500);
+                return;
+            }
+
+            const levels = await window.getCommunityLevels();
+            
+            list.innerHTML = "";
+            if (levels.length === 0) {
+                list.innerHTML = "No levels published yet!";
+            }
+
+            levels.forEach(lvl => {
+                const div = document.createElement("div");
+                div.className = "level-card";
+                div.innerHTML = `
+                    <div>
+                        <strong>${lvl.name}</strong><br>
+                        <small>BY: ${lvl.creator}</small>
+                    </div>
+                    <button onclick="playLevel('${lvl.id}')">PLAY MAP</button>
+                `;
+                list.appendChild(div);
+            });
+        }
+        
+        window.playLevel = (id) => {
+            localStorage.setItem("NEXT_LEVEL_ID", id); 
+            window.location.href = "game.html";
+        };
+
+        window.onload = loadLevels;
+    </script>
+</body>
+</html>

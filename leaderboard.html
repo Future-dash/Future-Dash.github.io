@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Global Leaderboards</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { flex-direction: column; background: #111; color: white; }
+        .lb-container { background: rgba(0,0,0,0.9); padding: 30px; border: 2px solid #00ffcc; border-radius: 15px; width: 400px; text-align: center; }
+        select { padding: 10px; margin-bottom: 20px; width: 100%; background: #222; color: #67ffff; border: 1px solid #67ffff; }
+        .entry { display: flex; justify-content: space-between; border-bottom: 1px solid #333; padding: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="lb-container">
+        <h1 style="color:#67ffff;">LEADERBOARDS</h1>
+        <select id="levelPicker" onchange="renderScores()"></select>
+        <div id="scoreList"></div>
+        <button class="menu-btn blue" onclick="window.location.href='index.html'" style="height:50px; width:100%; margin-top:20px;">Menu</button>
+    </div>
+
+    <script>
+        const boards = JSON.parse(localStorage.getItem("FD_LEADERBOARDS")) || {};
+        const picker = document.getElementById("levelPicker");
+        const list = document.getElementById("scoreList");
+
+        function init() {
+            const levels = Object.keys(boards);
+            if (levels.length === 0) {
+                list.innerHTML = "No scores recorded yet.";
+                return;
+            }
+            picker.innerHTML = levels.map(l => `<option value="${l}">${l}</option>`).join("");
+            renderScores();
+        }
+
+        function renderScores() {
+            const selected = picker.value;
+            const scores = boards[selected] || [];
+            list.innerHTML = scores.map((s, i) => `
+                <div class="entry">
+                    <span>#${i+1} ${s.username}</span>
+                    <span style="color:gold;">${s.time}s</span>
+                </div>
+            `).join("");
+        }
+        init();
+    </script>
+</body>
+</html>

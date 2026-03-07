@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Level - Cyber Speedrun</title>
+    <style>
+        body { background: #050505; color: white; font-family: 'Courier New', Courier, monospace; text-align: center; }
+        .container { padding: 50px; }
+        h1 { color: #67ffff; text-shadow: 0 0 10px #67ffff; letter-spacing: 4px; }
+        
+        #levelList { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+            gap: 20px; 
+            max-width: 1200px; 
+            margin: 40px auto; 
+        }
+
+        .level-card {
+            background: #111;
+            border: 2px solid #333;
+            padding: 20px;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: left;
+            position: relative;
+        }
+
+        .level-card:hover {
+            border-color: #67ffff;
+            background: #1a1a1a;
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px rgba(103, 255, 255, 0.3);
+        }
+
+        .level-name { font-size: 1.2rem; font-weight: bold; color: #67ffff; display: block; margin-bottom: 5px; }
+        .level-stats { font-size: 0.8rem; color: #888; display: block; }
+        
+        /* High Score Styling */
+        .high-score { 
+            margin-top: 15px; 
+            padding-top: 10px; 
+            border-top: 1px solid #222; 
+            font-size: 0.9rem; 
+            color: #ffcc00; 
+        }
+        .no-score { color: #444; font-style: italic; }
+
+        .btn-group { margin-top: 50px; display: flex; justify-content: center; gap: 20px; }
+        .nav-btn {
+            padding: 10px 30px;
+            background: transparent;
+            color: #67ffff;
+            border: 1px solid #67ffff;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-family: 'Courier New';
+        }
+        .nav-btn:hover { background: #67ffff; color: #050505; }
+        .danger-btn { color: #ff4444; border-color: #ff4444; }
+        .danger-btn:hover { background: #ff4444; color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>LOAD_SEQUENCE</h1>
+        <div id="levelList"></div>
+        
+        <div class="btn-group">
+            <a href="index.html" class="nav-btn">RETURN TO MENU</a>
+            <button class="nav-btn danger-btn" onclick="clearScores()">WIPE RECORDS</button>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = "FD_LEVELS";
+        const SCORE_KEY = "FD_LEADERBOARDS";
+        const listDiv = document.getElementById("levelList");
+
+        function getBestTime(levelName) {
+            const scores = JSON.parse(localStorage.getItem(SCORE_KEY)) || {};
+            const levelScores = scores[levelName];
+            
+            if (!levelScores || levelScores.length === 0) return null;
+            
+            // Leaderboard is already sorted by time in game.js, 
+            // but we'll sort again to be safe.
+            levelScores.sort((a, b) => a.time - b.time);
+            return levelScores[0].time;
+        }
+
+        function loadSelection() {
+            listDiv.innerHTML = ""; // Clear list
+            const levels = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+            const names = Object.keys(levels);
+
+            if (names.length === 0) {
+                listDiv.innerHTML = `<div style="grid-column: 1/-1; color: #ff4444;">NO DATA FOUND. GO TO EDITOR TO CREATE A LEVEL.</div>`;
+                return;
+            }
+
+            names.forEach(name => {
+                const data = levels[name];
+                const bestTime = getBestTime(name);
+                const blockCount = data.blocks ? data.blocks.length : 0;
+
+                const card = document.createElement("div");
+                card.className = "level-card";
+                
+                card.innerHTML = `
+                    <span class="level-name">${name.toUpperCase()}</span>
+                    <span class="level-stats">BLOCKS: ${blockCount}</span>
+                    <div class="high-score">
+                        ${bestTime ? `BEST: ${bestTime}s` : `<span class="no-score">NO RECORD</span>`}
+                    </div>
+                `;
+
+                card.onclick = () => {
+                    localStorage.setItem("playLevel", JSON.stringify(data));
+                    window.location.href = "game.html";
+                };
+
+                listDiv.appendChild(card);
+            });
+        }
+
+        function clearScores() {
+            if(confirm("Permanently delete all high scores? (Levels will stay)")) {
+                localStorage.removeItem(SCORE_KEY);
+                loadSelection();
+            }
+        }
+
+        loadSelection();
+    </script>
+</body>
+</html>

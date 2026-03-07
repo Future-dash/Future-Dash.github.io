@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .auth-container { text-align: center; background: rgba(0,0,0,0.8); padding: 50px; border: 2px solid #67ffff; border-radius: 20px; }
+        input { padding: 10px; margin: 10px; width: 200px; background: #222; color: white; border: 1px solid #67ffff; }
+        button { padding: 10px 20px; cursor: pointer; background: #67ffff; border: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <h2 id="statusTitle" style="color:#67ffff;">Login / Register</h2>
+        <div id="authInputs">
+            <input type="text" id="username" placeholder="Username"><br>
+            <input type="password" id="password" placeholder="Password"><br><br>
+            <button onclick="login()">Login</button>
+            <button onclick="register()" style="background:#00ffcc;">Register</button>
+        </div>
+        <button onclick="window.location.href='index.html'" style="margin-top:20px; background:gray;">Back</button>
+    </div>
+    <script src="auth.js"></script>
+</body>
+</html>
