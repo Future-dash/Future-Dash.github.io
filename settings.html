@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Future Dash - Settings</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .settings-box { background: rgba(0,0,0,0.9); padding: 40px; border: 2px solid #67ffff; border-radius: 20px; text-align: center; width: 400px; }
+        .color-grid { display: flex; justify-content: center; gap: 15px; margin: 20px 0; }
+        .color-opt { width: 50px; height: 50px; border-radius: 10px; cursor: pointer; border: 3px solid transparent; transition: 0.2s; }
+        .color-opt:hover { transform: scale(1.1); }
+        .selected { border-color: white; box-shadow: 0 0 15px white; }
+    </style>
+</head>
+<body style="flex-direction: column; display: flex; justify-content: center; align-items: center; height: 100vh; background: black; color: white;">
+
+    <div class="settings-box">
+        <h1 style="color: #67ffff;">PLAYER SETTINGS</h1>
+        <p id="userStatus">Log in to save your color!</p>
+        
+        <h3>Choose Character Color:</h3>
+        <div class="color-grid">
+            <div class="color-opt" style="background: #67ffff;" onclick="setColor('#67ffff', this)"></div>
+            <div class="color-opt" style="background: #ff4747;" onclick="setColor('#ff4747', this)"></div>
+            <div class="color-opt" style="background: #00ffcc;" onclick="setColor('#00ffcc', this)"></div>
+            <div class="color-opt" style="background: #ffcc00;" onclick="setColor('#ffcc00', this)"></div>
+            <div class="color-opt" style="background: #ff00ff;" onclick="setColor('#ff00ff', this)"></div>
+        </div>
+
+        <button class="menu-btn blue" onclick="window.location.href='index.html'" style="height: 50px; width: 100%; border-radius: 5px;">Back to Menu</button>
+    </div>
+
+    <script>
+        const user = localStorage.getItem("loggedInUser");
+        if(user) document.getElementById("userStatus").innerText = "Customizing for: " + user;
+
+        function setColor(color, element) {
+            // UI Update
+            document.querySelectorAll('.color-opt').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+
+            // Save Logic
+            if (!user) {
+                // If not logged in, save to a temporary global key
+                localStorage.setItem("temp_playerColor", color);
+            } else {
+                // Save to account-specific settings
+                let userSettings = JSON.parse(localStorage.getItem("FD_USER_SETTINGS")) || {};
+                userSettings[user] = { color: color };
+                localStorage.setItem("FD_USER_SETTINGS", JSON.stringify(userSettings));
+            }
+            alert("Color updated!");
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Global Leaderboards</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { background: #0a0a0a; color: white; font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; }
+        .lb-container { background: rgba(0,0,0,0.9); padding: 30px; border: 2px solid #00ffcc; width: 450px; text-align: center; margin-top: 50px; }
+        select { padding: 10px; margin-bottom: 20px; width: 100%; background: #222; color: #00ffcc; border: 1px solid #00ffcc; }
+        .entry { display: flex; justify-content: space-between; border-bottom: 1px solid #333; padding: 12px 5px; }
+        .gold { color: gold; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="lb-container">
+        <h1 style="color:#00ffcc;">GLOBAL RECORDS</h1>
+        <select id="levelPicker" onchange="loadCloudScores()"></select>
+        <div id="scoreList">Loading Cloud Data...</div>
+        <button onclick="window.location.href='index.html'" style="margin-top:20px; width:100%; padding:10px; cursor:pointer;">◀ MENU</button>
+    </div>
+
+    <script type="module" src="firebase-init.js"></script>
+    <script type="module">
+        const picker = document.getElementById("levelPicker");
+        const list = document.getElementById("scoreList");
+
+        async function init() {
+            // Check if Firebase functions are attached to window
+            if (typeof window.getCommunityLevels !== 'function') {
+                setTimeout(init, 200);
+                return;
+            }
+            const levels = await window.getCommunityLevels();
+            if (levels.length === 0) {
+                list.innerHTML = "No levels found.";
+                return;
+            }
+            // Populate dropdown with available level names
+            picker.innerHTML = levels.map(l => `<option value="${l.name}">${l.name}</option>`).join("");
+            loadCloudScores();
+        }
+
+        window.loadCloudScores = async () => {
+            const selectedLevel = picker.value;
+            list.innerHTML = "Fetching...";
+            if (typeof window.getGlobalLeaderboard === 'function') {
+                const scores = await window.getGlobalLeaderboard(selectedLevel);
+                if (scores.length === 0) {
+                    list.innerHTML = "No records yet.";
+                    return;
+                }
+                // Display top 10 scores
+                list.innerHTML = scores.map((s, i) => `
+                    <div class="entry">
+                        <span>#${i+1} ${s.user}</span>
+                        <span class="gold">${s.score}s</span>
+                    </div>
+                `).join("");
+            }
+        }
+        window.onload = init;
+    </script>
+</body>
+</html>

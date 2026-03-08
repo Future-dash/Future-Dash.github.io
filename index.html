@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Future Dash - Main Menu</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .menu-btn.logout-state { background: #ff4747; box-shadow: 0 0 25px #ff4747; }
+        .user-welcome { position: absolute; top: 20px; right: 20px; color: #67ffff; font-family: Arial; font-weight: bold; text-shadow: 0 0 10px #67ffff; }
+    </style>
+</head>
+<body>
+
+    <div id="userDisplay" class="user-welcome"></div>
+
+    <div class="menu-container">
+        <h1 class="title">FUTURE DASH</h1>
+        <div class="button-grid">
+            <button class="menu-btn blue" id="playBtn">Play</button>
+            <button class="menu-btn green" id="editorBtn">Level Editor</button>
+            <button class="menu-btn blue" id="creditsBtn">Credits</button>
+            <button class="menu-btn green" id="githubBtn">GitHub</button>
+            <button class="menu-btn blue" id="loginBtn">Login</button>
+            <button class="menu-btn green" id="leaderboardBtn">Leaderboard</button>
+            <button class="menu-btn blue" id="settingsBtn">Settings</button>
+            <a href="community.html"><button class = "menu-btn green">Community Levels</button></a>
+        </div>
+
+    <script src="menu.js"></script>
+    <script>
+        window.onload = function() {
+            const loginBtn = document.getElementById("loginBtn");
+            const userDisplay = document.getElementById("userDisplay");
+            const loggedInUser = localStorage.getItem("loggedInUser");
+
+            if (loggedInUser) {
+                userDisplay.innerText = "PLAYER: " + loggedInUser.toUpperCase();
+                loginBtn.innerText = "Logout";
+                loginBtn.classList.add("logout-state");
+                loginBtn.onclick = function() {
+                    localStorage.removeItem("loggedInUser");
+                    location.reload();
+                };
+            } else {
+                loginBtn.onclick = function() { window.location.href = "login.html"; };
+            }
+
+            document.getElementById("leaderboardBtn").onclick = () => window.location.href = "leaderboard.html";
+            document.getElementById("settingsBtn").onclick = () => window.location.href = "settings.html";
+        };
+    </script>
+</body>
+</html>

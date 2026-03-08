@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Future-Dash Community</title>
+    <style>
+        body { background: #0a0a0a; color: white; font-family: 'Courier New', monospace; text-align: center; }
+        
+        /* Navigation Bar */
+        .nav-bar { display: flex; justify-content: space-around; padding: 20px; background: #111; border-bottom: 2px solid #00ffff; }
+        
+        .level-card { 
+            border: 2px solid #00ffff; margin: 20px auto; padding: 15px; width: 70%;
+            background: rgba(0, 255, 255, 0.05); text-align: left;
+        }
+        
+        .leaderboard-box {
+            margin-top: 10px; padding: 10px; background: rgba(0, 0, 0, 0.5); border: 1px dashed #555;
+            font-size: 0.9em; color: #00ffcc;
+        }
+
+        button { background: #00ffff; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #fff; }
+        .back-btn { background: #ff0044; color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="nav-bar">
+        <button class="back-btn" onclick="window.location.href='index.html'">◀ BACK TO MENU</button>
+        <h1>COMMUNITY LEVELS</h1>
+        <div style="width:150px;"></div> </div>
+
+    <div id="level-list">Loading world maps...</div>
+
+    <script type="module" src="firebase-init.js"></script>
+    <script type="module">
+        async function loadLevels() {
+            const list = document.getElementById("level-list");
+            
+            if (typeof window.getCommunityLevels !== 'function') {
+                setTimeout(loadLevels, 500);
+                return;
+            }
+
+            const levels = await window.getCommunityLevels();
+            list.innerHTML = "";
+
+            levels.forEach(async (lvl) => {
+                const div = document.createElement("div");
+                div.className = "level-card";
+                
+                // We'll create a section for the scores
+                div.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <strong style="font-size:1.5em;">${lvl.name}</strong><br>
+                            <small>CREATOR: ${lvl.creator}</small>
+                        </div>
+                        <button onclick="playLevel('${lvl.id}')">PLAY MAP</button>
+                    </div>
+                    <div class="leaderboard-box" id="lb-${lvl.id}">
+                        Loading Top Times...
+                    </div>
+                `;
+                list.appendChild(div);
+
+                // Fetch the Top 5 scores for THIS specific level
+                loadTopScores(lvl.name, `lb-${lvl.id}`);
+            });
+        }
+
+        async function loadTopScores(levelName, elementId) {
+            if (typeof window.getGlobalLeaderboard === 'function') {
+                const scores = await window.getGlobalLeaderboard(levelName);
+                const box = document.getElementById(elementId);
+                
+                if (scores.length === 0) {
+                    box.innerHTML = "No records yet. Be the first!";
+                    return;
+                }
+
+                box.innerHTML = "<strong>TOP 10  RECORDS:</strong><br>" + 
+                    scores.map((s, i) => `${i+1}. ${s.user} - ${s.score}s`).join("<br>");
+            }
+        }
+
+        window.playLevel = (id) => {
+            localStorage.setItem("NEXT_LEVEL_ID", id); 
+            window.location.href = "game.html"; 
+        };
+
+        window.onload = loadLevels;
+    </script>
+</body>
+</html>

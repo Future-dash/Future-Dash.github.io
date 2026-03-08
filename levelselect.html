@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Level - Future dash</title>
+    <style>
+        body { 
+            background: #050505; 
+            color: white; 
+            font-family: 'Courier New', Courier, monospace; 
+            text-align: center; 
+            margin: 0;
+            padding: 0;
+        }
+        .container { padding: 50px; }
+        h1 { color: #67ffff; text-shadow: 0 0 10px #67ffff; letter-spacing: 4px; }
+        
+        #levelList { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+            gap: 20px; 
+            max-width: 1200px; 
+            margin: 40px auto; 
+        }
+
+        .level-card {
+            background: #111;
+            border: 2px solid #333;
+            padding: 20px;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: left;
+            position: relative;
+        }
+
+        .level-card:hover {
+            border-color: #67ffff;
+            background: #1a1a1a;
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px rgba(103, 255, 255, 0.2);
+        }
+
+        .level-name {
+            display: block;
+            font-size: 1.4em;
+            color: #67ffff;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .level-stats {
+            font-size: 0.8em;
+            color: #888;
+        }
+
+        .high-score {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid #222;
+            font-weight: bold;
+            color: #00ffcc;
+        }
+
+        .no-score { color: #444; font-style: italic; }
+
+        .btn-row { margin-top: 30px; }
+        button {
+            background: transparent;
+            border: 1px solid #67ffff;
+            color: #67ffff;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: inherit;
+            margin: 0 10px;
+        }
+        button:hover { background: #67ffff; color: black; }
+        .clear-btn { border-color: #ff4444; color: #ff4444; }
+        .clear-btn:hover { background: #ff4444; color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>LEVEL ARCHIVE</h1>
+        
+        <div id="levelList">
+            </div>
+
+        <div class="btn-row">
+            <button onclick="window.location.href='index.html'">BACK TO MENU</button>
+            <button class="clear-btn" onclick="clearScores()">WIPE RECORDS</button>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = "FD_LEVELS";
+        const SCORE_KEY = "FD_SCORES";
+
+        function getBestTime(levelName) {
+            const scores = JSON.parse(localStorage.getItem(SCORE_KEY)) || {};
+            return scores[levelName] || null;
+        }
+
+        function loadSelection() {
+            const listDiv = document.getElementById("levelList");
+            const levels = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+            const names = Object.keys(levels);
+
+            listDiv.innerHTML = "";
+
+            if (names.length === 0) {
+                listDiv.innerHTML = `<div style="grid-column: 1/-1; color: #ff4444;">NO DATA FOUND. GO TO EDITOR TO CREATE A LEVEL.</div>`;
+                return;
+            }
+
+            names.forEach(name => {
+                const data = levels[name];
+                const bestTime = getBestTime(name);
+                const blockCount = data.blocks ? data.blocks.length : 0;
+
+                const card = document.createElement("div");
+                card.className = "level-card";
+                
+                card.innerHTML = `
+                    <span class="level-name">${name.toUpperCase()}</span>
+                    <span class="level-stats">BLOCKS: ${blockCount}</span>
+                    <div class="high-score">
+                        ${bestTime ? `BEST: ${bestTime}s` : `<span class="no-score">NO RECORD</span>`}
+                    </div>
+                `;
+
+                card.onclick = () => {
+                    // Store the selected level data for game.js to pick up
+                    localStorage.setItem("playLevel", JSON.stringify(data));
+                    window.location.href = "game.html";
+                };
+
+                listDiv.appendChild(card);
+            });
+        }
+
+        function clearScores() {
+            if(confirm("Permanently delete all high scores? (Levels will stay)")) {
+                localStorage.removeItem(SCORE_KEY);
+                loadSelection();
+            }
+        }
+
+        window.onload = loadSelection;
+    </script>
+</body>
+</html>

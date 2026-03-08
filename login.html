@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Future-Dash | Access Terminal</title>
+    <style>
+        body { 
+            background: #050505; 
+            color: #67ffff; 
+            font-family: 'Courier New', monospace; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* CRT Scanline Effect */
+        body::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 4px, 3px 100%;
+            pointer-events: none;
+        }
+
+        .auth-container { 
+            background: rgba(10, 10, 10, 0.9); 
+            padding: 40px; 
+            border: 2px solid #67ffff; 
+            box-shadow: 0 0 20px rgba(103, 255, 255, 0.2);
+            border-radius: 5px;
+            width: 340px;
+            text-align: center;
+            position: relative;
+            z-index: 3;
+        }
+
+        h2 { text-transform: uppercase; letter-spacing: 3px; margin-bottom: 30px; text-shadow: 0 0 10px #67ffff; }
+
+        .input-group { margin-bottom: 25px; text-align: left; }
+        label { font-size: 0.75em; display: block; margin-bottom: 8px; color: #555; font-weight: bold; }
+
+        input { 
+            width: 100%;
+            padding: 12px;
+            background: #000;
+            border: 1px solid #333;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            box-sizing: border-box;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus { border-color: #67ffff; box-shadow: 0 0 10px rgba(103, 255, 255, 0.3); }
+
+        .btn-stack { display: flex; flex-direction: column; gap: 15px; margin-top: 30px; }
+
+        button { 
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold; 
+            text-transform: uppercase;
+            transition: 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .login-btn { background: #67ffff; color: #000; }
+        .login-btn:hover { background: #fff; box-shadow: 0 0 15px #fff; }
+
+        .reg-btn { background: transparent; border: 1px solid #00ffcc; color: #00ffcc; }
+        .reg-btn:hover { background: rgba(0, 255, 204, 0.1); box-shadow: 0 0 10px #00ffcc; }
+
+        .back-btn { 
+            background: none; 
+            color: #444; 
+            font-size: 0.8em; 
+            margin-top: 20px; 
+            text-decoration: underline;
+        }
+        .back-btn:hover { color: #67ffff; }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container">
+        <h2 id="statusTitle">System Access</h2>
+        
+        <div class="input-group">
+            <label>TERMINAL ID (USERNAME)</label>
+            <input type="text" id="username" placeholder="ENTER USERNAME" autocomplete="off">
+        </div>
+
+        <div class="input-group">
+            <label>ACCESS KEY (PASSWORD)</label>
+            <input type="password" id="password" placeholder="********">
+        </div>
+
+        <div class="btn-stack">
+            <button class="login-btn" onclick="handleLogin()">Initialize Login</button>
+            <button class="reg-btn" onclick="handleRegister()">Create New Profile</button>
+        </div>
+
+        <button class="back-btn" onclick="window.location.href='index.html'">Return to Mainframe</button>
+    </div>
+
+    <script type="module" src="firebase-init.js"></script>
+    <script src="auth.js"></script>
+
+</body>
+</html>

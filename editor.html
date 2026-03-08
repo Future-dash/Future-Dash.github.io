@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Future Dash | Level Architect</title>
+<style>
+    body { 
+        background: #050505; 
+        color: #67ffff; 
+        text-align: center; 
+        font-family: 'Courier New', monospace; 
+        margin: 0;
+        overflow-x: hidden;
+    }
+
+    h2 { 
+        text-transform: uppercase; 
+        letter-spacing: 5px; 
+        text-shadow: 0 0 10px #67ffff;
+        margin: 20px 0;
+    }
+
+    canvas { 
+        background: radial-gradient(circle, #111 0%, #000 100%); 
+        border: 2px solid #67ffff; 
+        display: block; 
+        margin: 0 auto; 
+        cursor: crosshair; 
+        box-shadow: 0 0 20px rgba(103, 255, 255, 0.1);
+    }
+
+    #toolbar {
+        background: #111;
+        padding: 15px;
+        border-bottom: 2px solid #333;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    button { 
+        padding: 10px 15px; 
+        cursor: pointer; 
+        background: #000; 
+        color: #67ffff; 
+        border: 1px solid #67ffff; 
+        font-family: inherit;
+        font-weight: bold;
+        transition: 0.2s;
+        text-transform: uppercase;
+        font-size: 12px;
+    }
+
+    button:hover { 
+        background: #67ffff; 
+        color: black; 
+        box-shadow: 0 0 10px #67ffff;
+    }
+
+    .active { 
+        background: #67ffff; 
+        color: black; 
+        box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+    }
+
+    .divider { margin: 0 10px; border-left: 1px solid #333; height: 35px; }
+
+    #deleteLevelBtn { border-color: #ff4444; color: #ff4444; }
+    #deleteLevelBtn:hover { background: #ff4444; color: white; box-shadow: 0 0 10px #ff4444; }
+    
+    #publish-btn { background: #00ffcc; color: black; border: none; }
+    #publish-btn:hover { background: white; box-shadow: 0 0 15px white; }
+
+    .hint { font-size: 10px; color: #444; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<div id="toolbar">
+    <button id="blockBtn" class="active">Block</button>
+    <button id="spikeBtn">Spike</button>
+    <button id="jumpPadBtn">Jump Pad</button> 
+    <button id="gravityBtn">Gravity</button> 
+    <button id="planeBtn">Plane</button>
+    <button id="finishBtn">Finish</button>
+    <button id="deleteBtn">Eraser</button>
+    
+    <div class="divider"></div>
+
+    <button id="saveBtn">Save</button>
+    <button id="loadBtn">Load</button>
+    <button id="newBtn">New</button>
+    <button id="deleteLevelBtn">Wipe</button>
+    <a href = index.html><button id="exitBtn">Exit</button></a>
+    
+    <div class="divider"></div>
+    <button id="publish-btn">Publish to Cloud</button>
+</div>
+
+<h2>Architect Terminal</h2>
+<canvas id="editorCanvas" width="1000" height="600"></canvas>
+<p class="hint">LEFT CLICK: Place | RIGHT CLICK: Rotate Spike | MOUSE WHEEL: Scroll Map</p>
+
+<script type="module" src="firebase-init.js"></script>
+<script src="editor.js"></script>
+</body>
+</html>

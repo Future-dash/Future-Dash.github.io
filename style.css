@@ -1,0 +1,71 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(teal);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Main container */
+.menu-container {
+    text-align: center;
+}
+
+/* Title */
+.title {
+    font-size: 70px;
+    color: black;
+    text-shadow: 0 0 25px #67ffff;
+    margin-bottom: 60px;
+}
+
+/* Button layout */
+.button-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
+}
+
+/* Circular buttons */
+.menu-btn {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* Colors */
+.blue {
+    background: #67ffff;
+    box-shadow: 0 0 25px #67ffff;
+}
+
+.green {
+    background: #00ffcc;
+    box-shadow: 0 0 25px #00ffcc;
+}
+
+/* Hover effect */
+.menu-btn:hover {
+    transform: scale(1.15);
+}
+/* Editor UI */
+.editor-ui {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+}
+
+.editor-ui button {
+    padding: 10px 15px;
+    margin-right: 10px;
+    cursor: pointer;
+}

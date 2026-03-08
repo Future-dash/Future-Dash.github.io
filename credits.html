@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credits - Future-dash</title>
+    <style>
+        body {
+            background-color: #050505;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .container {
+            border: 2px solid #67ffff;
+            padding: 40px;
+            background: rgba(103, 255, 255, 0.05);
+            box-shadow: 0 0 20px rgba(103, 255, 255, 0.2);
+            border-radius: 8px;
+        }
+
+        h1 {
+            color: #67ffff;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px #67ffff;
+        }
+
+        .credit-item {
+            margin: 20px 0;
+        }
+
+        .label {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            display: block;
+        }
+
+        .name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .back-btn {
+            margin-top: 40px;
+            padding: 10px 30px;
+            background: transparent;
+            color: #67ffff;
+            border: 1px solid #67ffff;
+            cursor: pointer;
+            text-decoration: none;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #67ffff;
+            color: #050505;
+            box-shadow: 0 0 15px #67ffff;
+        }
+
+        /* Scanline effect to match game */
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            z-index: 10;
+            pointer-events: none;
+        }
+        .container:hover .name {
+    text-shadow: 0 0 8px #67ffff;
+    transition: 0.5s;
+}
+    </style>
+</head>
+<body>
+    <div class="scanlines"></div>
+    
+    <div class="container">
+        <h1>Credits</h1>
+
+        <div class="credit-item">
+            <span class="label">Lead Designer</span>
+            <span class="name">Krrish(Aneerudh) Joshi</span>
+        </div>
+
+        <div class="credit-item">
+            <span class="label">AI Coding Assistants</span>
+            <span class="name">Gemini + ChatGPT</span>
+        </div>
+
+        <div class="credit-item">
+            <span class="label">Engine</span>
+            <span class="name">That HTML5 Canvas Thing</span>
+        </div>
+
+        <a href="index.html" class="back-btn">Back to Menu</a>
+    </div>
+</body>
+</html>
