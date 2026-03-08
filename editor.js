@@ -30,12 +30,12 @@ document.getElementById("jumpPadBtn").onclick = () => { currentTool = "jumppad";
 document.getElementById("gravityBtn").onclick = () => { currentTool = "gravity"; setActive("gravityBtn"); };
 document.getElementById("planeBtn").onclick = () => { currentTool = "plane"; setActive("planeBtn"); };
 document.getElementById("deleteBtn").onclick = () => { currentTool = "delete"; setActive("deleteBtn"); };
-// Corrected Publish Listener in editor.js
+
+// Publish Listener
 document.getElementById("publish-btn").onclick = () => {
     const levelTitle = prompt("Enter a name for your level:");
     const creatorName = prompt("Enter your Creator Name:", "GuestDev");
     
-    // Use levelData.blocks because that is where your editor stores objects
     const blocksToPublish = levelData.blocks;
 
     if (levelTitle && blocksToPublish && blocksToPublish.length > 0) {
@@ -74,35 +74,45 @@ function draw() {
         const drawX = obj.x - cameraX;
         if(drawX + blockSize < 0 || drawX > canvas.width) return;
 
+        ctx.save();
+        // Move context to the center of the block for rotation
+        ctx.translate(drawX + blockSize / 2, obj.y + blockSize / 2);
+        if (obj.rotation) {
+            ctx.rotate((obj.rotation * Math.PI) / 180);
+        }
+
         if (obj.type === "block") {
             ctx.fillStyle = "#ffffff";
-            ctx.fillRect(drawX, obj.y, blockSize, blockSize);
+            ctx.fillRect(-blockSize / 2, -blockSize / 2, blockSize, blockSize);
         } else if (obj.type === "spike") {
             ctx.fillStyle = "red";
             ctx.beginPath();
-            ctx.moveTo(drawX, obj.y + blockSize);
-            ctx.lineTo(drawX + blockSize / 2, obj.y);
-            ctx.lineTo(drawX + blockSize, obj.y + blockSize);
+            // Coordinates are relative to the center due to translate()
+            ctx.moveTo(-blockSize / 2, blockSize / 2);
+            ctx.lineTo(0, -blockSize / 2);
+            ctx.lineTo(blockSize / 2, blockSize / 2);
+            ctx.closePath();
             ctx.fill();
         } else if (obj.type === "finish") {
             ctx.fillStyle = "gold";
-            ctx.fillRect(drawX, obj.y, blockSize, blockSize);
+            ctx.fillRect(-blockSize / 2, -blockSize / 2, blockSize, blockSize);
         } else if (obj.type === "jumppad") {
             ctx.fillStyle = "yellow";
-            ctx.fillRect(drawX, obj.y + (blockSize * 0.7), blockSize, blockSize * 0.3);
+            ctx.fillRect(-blockSize / 2, (blockSize * 0.2), blockSize, blockSize * 0.3);
         } else if (obj.type === "gravity") {
             ctx.strokeStyle = "#bf40bf";
             ctx.lineWidth = 3;
-            ctx.strokeRect(drawX + 5, obj.y + 5, blockSize - 10, blockSize - 10);
+            ctx.strokeRect(-blockSize / 2 + 5, -blockSize / 2 + 5, blockSize - 10, blockSize - 10);
             ctx.fillStyle = "rgba(191, 64, 191, 0.3)";
-            ctx.fillRect(drawX + 10, obj.y + 10, blockSize - 20, blockSize - 20);
+            ctx.fillRect(-blockSize / 2 + 10, -blockSize / 2 + 10, blockSize - 20, blockSize - 20);
         } else if (obj.type === "plane") {
             ctx.strokeStyle = "#44ff44";
             ctx.lineWidth = 3;
-            ctx.strokeRect(drawX + 5, obj.y + 5, blockSize - 10, blockSize - 10);
+            ctx.strokeRect(-blockSize / 2 + 5, -blockSize / 2 + 5, blockSize - 10, blockSize - 10);
             ctx.fillStyle = "rgba(68, 255, 68, 0.3)";
-            ctx.fillRect(drawX + 10, obj.y + 10, blockSize - 20, blockSize - 20);
+            ctx.fillRect(-blockSize / 2 + 10, -blockSize / 2 + 10, blockSize - 20, blockSize - 20);
         }
+        ctx.restore();
     });
 
     requestAnimationFrame(draw);
@@ -114,12 +124,29 @@ canvas.addEventListener("mousedown", (e) => {
     const worldX = Math.floor((e.clientX - rect.left + cameraX) / blockSize) * blockSize;
     const worldY = Math.floor((e.clientY - rect.top) / blockSize) * blockSize;
 
+    // Find if a block already exists at this location
+    const existingIndex = levelData.blocks.findIndex(b => b.x === worldX && b.y === worldY);
+
     if (currentTool === "delete") {
-        levelData.blocks = levelData.blocks.filter(b => !(b.x === worldX && b.y === worldY));
+        if (existingIndex !== -1) levelData.blocks.splice(existingIndex, 1);
     } else {
-        levelData.blocks = levelData.blocks.filter(b => !(b.x === worldX && b.y === worldY));
-        if (currentTool === "finish") levelData.blocks = levelData.blocks.filter(b => b.type !== "finish");
-        levelData.blocks.push({ x: worldX, y: worldY, type: currentTool });
+        if (existingIndex !== -1) {
+            let block = levelData.blocks[existingIndex];
+            // If clicking an existing spike with the spike tool, cycle rotation
+            if (currentTool === "spike" && block.type === "spike") {
+                block.rotation = (block.rotation || 0) + 90;
+                if (block.rotation >= 360) block.rotation = 0;
+            } else {
+                // Otherwise replace the block
+                levelData.blocks.splice(existingIndex, 1);
+                if (currentTool === "finish") levelData.blocks = levelData.blocks.filter(b => b.type !== "finish");
+                levelData.blocks.push({ x: worldX, y: worldY, type: currentTool, rotation: 0 });
+            }
+        } else {
+            // Place new block
+            if (currentTool === "finish") levelData.blocks = levelData.blocks.filter(b => b.type !== "finish");
+            levelData.blocks.push({ x: worldX, y: worldY, type: currentTool, rotation: 0 });
+        }
     }
 });
 
