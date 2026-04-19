@@ -154,9 +154,9 @@
             username: username,
             token: btoa(validationToken)
         };
-        if (isCommunityLevel && window.saveToLeaderboardFree) {
-            await window.saveToLeaderboardFree(runData);
-        }
+        if (window.saveToLeaderboardFree) {
+    await window.saveToLeaderboardFree(runData);
+}
     }
 
     function saveLocalScore(levelName, time) {
