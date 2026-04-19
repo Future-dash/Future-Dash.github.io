@@ -269,11 +269,10 @@
 
                 list.innerHTML = scores.map((s, i) => {
                     const rankClass = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : '';
-                    const medal = i === 0 ? '#' : i === 1 ? '#' : i === 2 ? '#' : '#';
                     return `
                     <div class="entry">
                         <div class="entry-left">
-                            <span class="entry-rank ${rankClass}">${medal}${i + 1}</span>
+                            <span class="entry-rank ${rankClass}">#${i + 1}</span>
                             <span class="entry-user">${s.user}</span>
                         </div>
                         <span class="entry-score">${parseFloat(s.score).toFixed(2)}<span class="entry-score-unit">s</span></span>
