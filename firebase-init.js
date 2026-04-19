@@ -29,7 +29,6 @@ window.userLogin = (email, pass) => signInWithEmailAndPassword(auth, email, pass
 window.userLogout = () => signOut(auth);
 window.getCurrentUser = () => auth.currentUser;
 
-// This fixes the "updateUserProfile is not defined" error in auth.js
 window.updateUserProfile = async (uid, data) => {
     try {
         const userRef = doc(db, "users", uid);
@@ -54,7 +53,6 @@ window.publishLevel = async (name, creator, data) => {
 
 window.getCommunityLevels = async () => {
     try {
-        // Note: This requires an Index in Firebase if you use orderBy
         const q = query(collection(db, "published_levels"), orderBy("timestamp", "desc"));
         const querySnapshot = await getDocs(q);
         return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -72,13 +70,9 @@ window.getLevelByID = async (levelId) => {
 // ===============================
 // 5. LEADERBOARD (Required for game.js)
 // ===============================
-
-// Matching the name exactly to what game.js calls
 window.saveGlobalScoreSecurely = async (runData) => {
     const secretKey = "FutureDash_REDACTED_2026"; 
     const token = btoa(runData.time + "-" + secretKey);
-    window.saveToLeaderboardFree = window.saveGlobalScoreSecurely;
-
     try {
         await addDoc(collection(db, "leaderboards"), {
             level: runData.levelName,
@@ -91,6 +85,9 @@ window.saveGlobalScoreSecurely = async (runData) => {
         console.log("Global Score Saved!");
     } catch (e) { console.error("Cloud Score Error:", e); }
 };
+
+// Alias so game.js can find it by the name it uses
+window.saveToLeaderboardFree = window.saveGlobalScoreSecurely;
 
 window.getGlobalLeaderboard = async (levelName) => {
     try {
