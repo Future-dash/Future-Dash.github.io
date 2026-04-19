@@ -4,61 +4,291 @@
     <title>Global Leaderboards</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        body { background: #0a0a0a; color: white; font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; }
-        .lb-container { background: rgba(0,0,0,0.9); padding: 30px; border: 2px solid #00ffcc; width: 450px; text-align: center; margin-top: 50px; }
-        select { padding: 10px; margin-bottom: 20px; width: 100%; background: #222; color: #00ffcc; border: 1px solid #00ffcc; }
-        .entry { display: flex; justify-content: space-between; border-bottom: 1px solid #333; padding: 12px 5px; }
-        .gold { color: gold; font-weight: bold; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #0a0a0a;
+            color: white;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .lb-wrapper {
+            width: 100%;
+            max-width: 520px;
+        }
+
+        .lb-title {
+            text-align: center;
+            font-size: 11px;
+            letter-spacing: 4px;
+            color: #00ffcc;
+            margin-bottom: 6px;
+            opacity: 0.7;
+        }
+
+        .lb-heading {
+            text-align: center;
+            font-size: 32px;
+            letter-spacing: 6px;
+            color: #00ffcc;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(0, 255, 204, 0.4);
+        }
+
+        .lb-container {
+            background: rgba(0, 255, 204, 0.03);
+            border: 1px solid rgba(0, 255, 204, 0.25);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .lb-picker-row {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(0, 255, 204, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .lb-picker-label {
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: rgba(0, 255, 204, 0.5);
+            white-space: nowrap;
+        }
+
+        select {
+            flex: 1;
+            padding: 8px 12px;
+            background: rgba(0, 255, 204, 0.05);
+            color: #00ffcc;
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            cursor: pointer;
+            outline: none;
+            appearance: none;
+        }
+
+        select:focus {
+            border-color: rgba(0, 255, 204, 0.7);
+        }
+
+        .lb-header-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px;
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: rgba(0, 255, 204, 0.4);
+            border-bottom: 1px solid rgba(0, 255, 204, 0.1);
+        }
+
+        #scoreList {
+            min-height: 200px;
+        }
+
+        .entry {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            transition: background 0.15s;
+            font-size: 13px;
+        }
+
+        .entry:last-child {
+            border-bottom: none;
+        }
+
+        .entry:hover {
+            background: rgba(0, 255, 204, 0.04);
+        }
+
+        .entry-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .entry-rank {
+            font-size: 11px;
+            color: rgba(255,255,255,0.3);
+            width: 22px;
+            text-align: right;
+        }
+
+        .rank-1 { color: gold; font-weight: bold; font-size: 13px; }
+        .rank-2 { color: silver; font-size: 12px; }
+        .rank-3 { color: #cd7f32; font-size: 12px; }
+
+        .entry-user {
+            color: rgba(255,255,255,0.85);
+            letter-spacing: 1px;
+        }
+
+        .entry-score {
+            color: #00ffcc;
+            font-weight: bold;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        .entry-score-unit {
+            font-size: 10px;
+            color: rgba(0,255,204,0.5);
+            margin-left: 2px;
+        }
+
+        .state-msg {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            font-size: 12px;
+            letter-spacing: 2px;
+            color: rgba(255,255,255,0.25);
+        }
+
+        .loading-dots::after {
+            content: '';
+            animation: dots 1.2s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0%   { content: ''; }
+            25%  { content: '.'; }
+            50%  { content: '..'; }
+            75%  { content: '...'; }
+        }
+
+        .lb-footer {
+            padding: 16px 20px;
+            border-top: 1px solid rgba(0, 255, 204, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .lb-count {
+            font-size: 10px;
+            letter-spacing: 1px;
+            color: rgba(0,255,204,0.3);
+        }
+
+        .btn-menu {
+            background: transparent;
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            color: rgba(0, 255, 204, 0.7);
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            letter-spacing: 2px;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: all 0.2s;
+        }
+
+        .btn-menu:hover {
+            background: rgba(0, 255, 204, 0.08);
+            border-color: rgba(0, 255, 204, 0.7);
+            color: #00ffcc;
+        }
     </style>
 </head>
 <body>
-    <div class="lb-container">
-        <h1 style="color:#00ffcc;">GLOBAL RECORDS</h1>
-        <select id="levelPicker" onchange="loadCloudScores()"></select>
-        <div id="scoreList">Loading Cloud Data...</div>
-        <button onclick="window.location.href='index.html'" style="margin-top:20px; width:100%; padding:10px; cursor:pointer;">◀ MENU</button>
+    <div class="lb-wrapper">
+        <p class="lb-title">FUTURE DASH</p>
+        <h1 class="lb-heading">RECORDS</h1>
+
+        <div class="lb-container">
+            <div class="lb-picker-row">
+                <span class="lb-picker-label">LEVEL</span>
+                <select id="levelPicker" onchange="loadCloudScores()">
+                    <option disabled selected>Loading levels...</option>
+                </select>
+            </div>
+
+            <div class="lb-header-row">
+                <span>PLAYER</span>
+                <span>TIME</span>
+            </div>
+
+            <div id="scoreList">
+                <div class="state-msg"><span class="loading-dots">CONNECTING</span></div>
+            </div>
+
+            <div class="lb-footer">
+                <span class="lb-count" id="recordCount"></span>
+                <button class="btn-menu" onclick="window.location.href='index.html'">◀ MENU</button>
+            </div>
+        </div>
     </div>
 
-    <script type="module" src="firebase-init.js"></script>
     <script type="module">
+        import { getCommunityLevels, getGlobalLeaderboard } from './firebase-init.js';
+
         const picker = document.getElementById("levelPicker");
         const list = document.getElementById("scoreList");
+        const recordCount = document.getElementById("recordCount");
 
         async function init() {
-            // Check if Firebase functions are attached to window
-            if (typeof window.getCommunityLevels !== 'function') {
-                setTimeout(init, 200);
-                return;
-            }
-            const levels = await window.getCommunityLevels();
-            if (levels.length === 0) {
-                list.innerHTML = "No levels found.";
-                return;
-            }
-            // Populate dropdown with available level names
-            picker.innerHTML = levels.map(l => `<option value="${l.name}">${l.name}</option>`).join("");
-            loadCloudScores();
-        }
-
-        window.loadCloudScores = async () => {
-            const selectedLevel = picker.value;
-            list.innerHTML = "Fetching...";
-            if (typeof window.getGlobalLeaderboard === 'function') {
-                const scores = await window.getGlobalLeaderboard(selectedLevel);
-                if (scores.length === 0) {
-                    list.innerHTML = "No records yet.";
+            try {
+                const levels = await getCommunityLevels();
+                if (levels.length === 0) {
+                    list.innerHTML = '<div class="state-msg">NO LEVELS FOUND</div>';
                     return;
                 }
-                // Display top 10 scores
-                list.innerHTML = scores.map((s, i) => `
-                    <div class="entry">
-                        <span>#${i+1} ${s.user}</span>
-                        <span class="gold">${s.score}s</span>
-                    </div>
-                `).join("");
+                picker.innerHTML = levels.map(l => `<option value="${l.name}">${l.name}</option>`).join("");
+                loadCloudScores();
+            } catch (e) {
+                list.innerHTML = '<div class="state-msg">CONNECTION ERROR</div>';
+                console.error(e);
             }
         }
-        window.onload = init;
+
+        async function loadCloudScores() {
+            const selectedLevel = picker.value;
+            list.innerHTML = '<div class="state-msg"><span class="loading-dots">FETCHING</span></div>';
+            recordCount.textContent = '';
+
+            try {
+                const scores = await getGlobalLeaderboard(selectedLevel);
+                if (scores.length === 0) {
+                    list.innerHTML = '<div class="state-msg">NO RECORDS YET</div>';
+                    return;
+                }
+
+                list.innerHTML = scores.map((s, i) => {
+                    const rankClass = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : '';
+                    const medal = i === 0 ? '#' : i === 1 ? '#' : i === 2 ? '#' : '#';
+                    return `
+                    <div class="entry">
+                        <div class="entry-left">
+                            <span class="entry-rank ${rankClass}">${medal}${i + 1}</span>
+                            <span class="entry-user">${s.user}</span>
+                        </div>
+                        <span class="entry-score">${parseFloat(s.score).toFixed(2)}<span class="entry-score-unit">s</span></span>
+                    </div>`;
+                }).join("");
+
+                recordCount.textContent = `TOP ${scores.length} RECORDS`;
+            } catch (e) {
+                list.innerHTML = '<div class="state-msg">FETCH ERROR</div>';
+                console.error(e);
+            }
+        }
+
+        window.loadCloudScores = loadCloudScores;
+        init();
     </script>
 </body>
 </html>
