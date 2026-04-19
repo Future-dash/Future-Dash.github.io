@@ -51,13 +51,14 @@ window.publishLevel = async (name, creator, data) => {
     } catch (e) { console.error("Publish Error:", e); return null; }
 };
 
-window.getCommunityLevels = async () => {
+export const getCommunityLevels = async () => {
     try {
         const q = query(collection(db, "published_levels"), orderBy("timestamp", "desc"));
         const querySnapshot = await getDocs(q);
         return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     } catch (e) { console.error("Fetch Error:", e); return []; }
 };
+window.getCommunityLevels = getCommunityLevels;
 
 window.getLevelByID = async (levelId) => {
     try {
@@ -89,7 +90,7 @@ window.saveGlobalScoreSecurely = async (runData) => {
 // Alias so game.js can find it by the name it uses
 window.saveToLeaderboardFree = window.saveGlobalScoreSecurely;
 
-window.getGlobalLeaderboard = async (levelName) => {
+export const getGlobalLeaderboard = async (levelName) => {
     try {
         const q = query(
             collection(db, "leaderboards"), 
@@ -101,3 +102,4 @@ window.getGlobalLeaderboard = async (levelName) => {
         return querySnapshot.docs.map(doc => doc.data());
     } catch (e) { console.error("Leaderboard Fetch Error:", e); return []; }
 };
+window.getGlobalLeaderboard = getGlobalLeaderboard;
