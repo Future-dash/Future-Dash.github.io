@@ -152,11 +152,12 @@
             levelName: currentLevelName,
             time: parseFloat(score),
             username: username,
+            path: currentRunPath,
             token: btoa(validationToken)
         };
-        if (window.saveToLeaderboardFree) {
-    await window.saveToLeaderboardFree(runData);
-}
+        if (isCommunityLevel && window.saveToLeaderboardFree) {
+            await window.saveToLeaderboardFree(runData);
+        }
     }
 
     function saveLocalScore(levelName, time) {
