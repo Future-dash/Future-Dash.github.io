@@ -77,6 +77,7 @@ window.getLevelByID = async (levelId) => {
 window.saveGlobalScoreSecurely = async (runData) => {
     const secretKey = "FutureDash_REDACTED_2026"; 
     const token = btoa(runData.time + "-" + secretKey);
+    window.saveToLeaderboardFree = window.saveGlobalScoreSecurely;
 
     try {
         await addDoc(collection(db, "leaderboards"), {
