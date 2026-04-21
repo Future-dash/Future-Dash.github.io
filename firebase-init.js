@@ -5,6 +5,7 @@ import {
 import { 
     getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app-check.js";
 
 // 1. CONFIGURATION
 const firebaseConfig = {
@@ -20,7 +21,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
-import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app-check.js";
 const appCheck = initializeAppCheck(app, {
     provider: new ReCaptchaV3Provider('6Le6GsIsAAAAAB1ffTlUpnm7TtW1NjHTKLT8HPA1'),
     isTokenAutoRefreshEnabled: true
